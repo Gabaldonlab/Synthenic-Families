@@ -16,7 +16,7 @@ REQUIREMENTS: ftp://ftp.wormbase.org/pub/wormbase/releases/WS248/species/c_elega
 NOTE: this list can contain all genes in each genome, only protein coding genes, etc. 
 
 
-###### 2nd: to create a file including all orthology relationships for the 4 nemateode species
+###### 2nd: to create a file including all orthology relationships for the four nematode species
 #usage: python wormbase_orthoParalogsGH.py elegans_genes.list c_elegans.PRJNA13758.WS248.orthologs.txt celegans_ortho.out
 NOTE: protein coding genes are more prone to have orthology relationships annotated
 
