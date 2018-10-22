@@ -3,24 +3,24 @@
 Created on Fri Jan 29 16:52:45 2016
 @author: cinta
 """
-#script to obtain a file including all lncRNA having conserved syntheny with lncRNA from any of the three other species 
 #to run: celegans_geneOrder.list celegans_ortho.out out
-#celegans_geneOrder.list: contains the gene order of the whole genome concatenating chr 
+#celegans_geneOrder.list: contains the cgene order of the whole genome concatenating chr 
+#in the following order: I, II, III, IV, MtDNA, V, X
 #head celegans_ortho.out: contains othology relationships (orthologs and paralogs)
-    #elegans	remanei	briggsae	brenneri  myID
-    #WBGene00022277	WBGene00057179	WBGene00026679	WBGene00151451	myID1
-#ex out:
-    #cele   	cbren	XLOC_014828	XLOC_024666
-    #cele	  cbren	XLOC_014828	XLOC_024657
+#elegans	remanei	briggsae	brenneri
+#WBGene00022277	WBGene00057179	WBGene00026679	WBGene00151451	myID1
 
-#time python synteny_nematodesv4_allGenes_LeftRigth.py 
+#ex out: 4spv4_6cluster2minFull.out
+#cele	cbren	XLOC_014828	XLOC_024666
+#cele	cbren	XLOC_014828	XLOC_024657
+
+#time python /home/cpegueroles/Documents/python/synteny_nematodesv4_allGenes_LeftRigth.py 
 #celegans_geneOrder.list cbriggsae_geneOrder.list cbrenneri_geneOrder.list cremanei_geneOrder.list 
 #celegans_ortho.out 4spv4_6cluster2minFull.out  3 3 1 no
-#	3: number of genes considered at each side of a given lncRNA
-#	3: minimum number of shared genes 
-#	1: minimum number of shared genes at each side
+#	3: considered genes located nearby a given lncRNA
+#	3: minimum number of total shared genes 
+#	1: minimum shared genes at each side
 #	yes -> to consider those genes without homology; no -> only genes with homology
-
 import sys,re
 
 def recodeList(file1, file2, string):#gene order list for spX, orthology file, ex: 'cele'
@@ -65,19 +65,16 @@ def recodeList(file1, file2, string):#gene order list for spX, orthology file, e
                     
         if found==0:
             nonmatched=nonmatched+1
-            #TO IMPROVE: If found==0 I could append row1 (a gene with no orthology relationship) to mylist
             if nonMatch=='yes':
                 mylist.append(row1)
         found=0
-        #print mylist
     print "number of matched IDs for",string,": " ,matched
     print "number of NON matched IDs for",string,": " ,nonmatched
     print "number of candidate lncRNA",string,": " ,lncRNA,"\n" 
     return mylist
 
-def dictionaryOfClusters(myidx,mylist):#positions in myList for each lncRNA; myList=renamed gene order
-    #to create a dict; for each lncRNA (key) stores the number of nearby renamed geneID indicated by the user
-    #TO IMPROVE: I could not count lncRNAID...    
+def dictionaryOfClusters(myidx,mylist):#myidx=positions in myList for each lncRNA; myList=renamed gene order
+    #to create a dict; for each lncRNA (key) stores the number of nearby renamed geneID indicated by the user  
     mydict={}
     for idx in myidx:
         key=mylist[idx]
@@ -87,14 +84,14 @@ def dictionaryOfClusters(myidx,mylist):#positions in myList for each lncRNA; myL
         i=1
         while i <=genesNearby:
             try:
-                mydict[key]['left'].append(mylist[idx-i])
-                mydict[key]['right'].append(mylist[idx+i])
-                mydict[key]['all'].append(mylist[idx-i])
+                if idx-i >=0:                 
+                    mydict[key]['left'].append(mylist[idx-i])
+                    mydict[key]['all'].append(mylist[idx-i])
+                mydict[key]['right'].append(mylist[idx+i])                                   
                 mydict[key]['all'].append(mylist[idx+i])
             except IndexError:
                 pass
             i=i+1
-        #print key, mydict[key]
             
     return mydict
     
@@ -122,13 +119,8 @@ def comparingDict(sp1, sp2):
     for key1, val1 in dict1.iteritems():
         print key1, val1
         for key2, val2 in dict2.iteritems():
-            #if len(set(val1).intersection(val2)) >=minOverlap:
-                #mytup=(key1,key2)
-                #myHomologs.append(mytup)
             if len(set(dict1[key1]['all']).intersection(dict2[key2]['all'])) >=minOverlap:
             #at least one of the two lncRNA share genes in the left and the right side    
-#                if len(set(dict1[key1]['right']).intersection(dict2[key2]['right'])) >=minSideOverlap or len(set(dict1[key1]['right']).intersection(dict2[key2]['left'])) >=minSideOverlap:
-#                    if len(set(dict1[key1]['left']).intersection(dict2[key2]['right'])) >=minSideOverlap or len(set(dict1[key1]['left']).intersection(dict2[key2]['left'])) >=minSideOverlap:
             #forces that both lncRNA share genes in the left and the right side    
                 if len(set(dict1[key1]['right']).intersection(dict2[key2]['right'])) >=minSideOverlap:
                     if len(set(dict1[key1]['left']).intersection(dict2[key2]['left'])) >=minSideOverlap: 
@@ -136,8 +128,7 @@ def comparingDict(sp1, sp2):
                 if len(set(dict1[key1]['right']).intersection(dict2[key2]['left'])) >=minSideOverlap:
                     if len(set(dict1[key1]['left']).intersection(dict2[key2]['right'])) >=minSideOverlap:
                         homologFound='true'
-                if homologFound=='true':
-                        #print dict1[key1], dict2[key2]               
+                if homologFound=='true':             
                         mytup=(key1,key2)
                         myHomologs.append(mytup)
                         homologFound='false'
@@ -178,22 +169,16 @@ cbren_idx = [i for i, item in enumerate(cbrenList) if item.startswith('XLOC_')]
 crem_idx = [i for i, item in enumerate(cremList) if item.startswith('XLOC_')]
 
 for x in comparingDict('cele','cbren'):
-    #print 'cele','cbren','\t'.join(x)
     out.write('cele\tcbren\t%s\n'% ('\t'.join(x)))
 for x in comparingDict('cele','cbrig'):
-    #print 'cele','cbrig','\t'.join(x)
     out.write('cele\tcbrig\t%s\n'% ('\t'.join(x)))     
 for x in comparingDict('cele','crem'):
-    #print 'cele','crem','\t'.join(x)
     out.write('cele\tcrem\t%s\n'% ('\t'.join(x)))
 for x in comparingDict('cbren','cbrig'):
-    #print 'cbren','cbrig','\t'.join(x)
     out.write('cbren\tcbrig\t%s\n'% ('\t'.join(x)))
 for x in comparingDict('cbren','crem'):     
-    #print 'cbren','crem','\t'.join(x)
     out.write('cbren\tcrem\t%s\n'% ('\t'.join(x)))
 for x in comparingDict('cbrig','crem'):
-    #print 'cbrig','crem','\t'.join(x)
     out.write('cbrig\tcrem\t%s\n'% ('\t'.join(x)))
 
 for x in comparingDict('cbren','cele'):
