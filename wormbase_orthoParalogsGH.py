@@ -35,7 +35,6 @@ ort= {'rem':[], 'brig':[], 'bren':[]}
 for row in open(in2, 'r').readlines():
     row = row.rstrip().split("\t")
     if re.search(r'WBGene0', row[0]):
-        #print "key found"
         key=row[0]
         if not key in dictOrt:
            dictOrt[key]=ort
@@ -50,7 +49,6 @@ for row in open(in2, 'r').readlines():
         dictOrt[key]['bren'].append(row[1])
         bren=1
     if re.search(r'=', row[0]) and new==1: 
-        #print "equal found"
         if rem==0:
             dictOrt[key]['rem'].append('na')
         if brig==0:
@@ -87,8 +85,6 @@ for x in mylist:
                     bren= val['bren'][i]
                 except IndexError:
                     pass
-                #print length
-                #print key, rem, brig,  bren
                 out.write("%s\t%s\t%s\t%s\tmyID%s\n" % (key, rem, brig, bren, myID))
                 i=i+1
             myID=myID+1
