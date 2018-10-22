@@ -32,10 +32,16 @@ NOTE: protein coding genes are more prone to have orthology relationships annota
 
 
 ###### 4th: to classify lncRNA from 4 different species into families
-#usage: python classifyFamiliesv3_VennGH.py 4spv4.out 4spv4_Families.fam 4spv4_Families.txt 4spv4_venn.R >4spv4_Families.counts
+#usage: python classifyFamiliesv5_VennGH.py cele cbrig cbren crem 4spv4.out 4spv4_Families.fam 4spv4_Families.txt 4spv4_FAMvenn.R 4spv4_GENESvenn.R >4spv4_Families.counts
+
 	- ex INPUT file: 4spv4.out
 	cele	cbren	XLOC_014828	XLOC_024666
 	cele	cbren	XLOC_014828	XLOC_024657
+	- ex INPUT file: cele -> #number of C. elegans genes to classify
+	- ex INPUT file: cbrig -> #number of C. briggsae genes to classify
+	- ex INPUT file: cbren -> #number of C. brenneri genes to classify
+	- ex INPUT file: crem -> #number of C. remanei genes to classify
+
 	- ex OUTPUT file: 4spv4_Families.fam
 	fam1    XLOC_010119cbrig
 	fam1	XLOC_019544crem
@@ -46,7 +52,8 @@ NOTE: protein coding genes are more prone to have orthology relationships annota
 	- ex OUTPUT file: 4spv4_Families.counts
     	EleBrenBrig 56
     	EleBrenRem 51
-	- ex OUTPUT file: 4spv4_venn.R -> R script to draw a venn diagram using R
+	- ex OUTPUT file: 4spv4_GENESvenn.R -> R script to draw a venn diagram with the number of overlapped genes using R
+	- ex OUTPUT file: 4spv4_FAMvenn.R -> R script to draw a venn diagram with the number of overlapped families using R
 
 ###### 5th: to refine families classification using blast matchs
 the script calculates a score indicating the blast suport for a given family baseed on blast hits
