@@ -55,23 +55,4 @@ NOTE: protein coding genes are more prone to have orthology relationships annota
 	- ex OUTPUT file: 4spv4_GENESvenn.R -> R script to draw a venn diagram with the number of overlapped genes using R
 	- ex OUTPUT file: 4spv4_FAMvenn.R -> R script to draw a venn diagram with the number of overlapped families using R
 
-###### 5th: to refine families classification using blast matchs
-the script calculates a score indicating the blast suport for a given family baseed on blast hits
-#usage: python refineFamiliesWithBlastGH.py 4spv4_Families.fam blastOut 4spGeneTransID.txt out1 out2
-	- ex INPUT file: 4spv4_Families.fam
-	fam1    XLOC_010119cbrig
-	fam1	XLOC_019544crem
-	fam1	XLOC_024997cbren
-	- ex INPUT file: blastOut.txt
-   	TCONS_00000606cbren	TCONS_00000606cbren	100.00	486	0	0	1486	1	486	0.0	 898
-	- ex INPUT file: 4spGeneTransID.txt
-   	XLOC_000040cele	TCONS_00000067cele
-	- ex OUTPUT file: OUT1
-    	fam408	XLOC_009936crem	XLOC_010893cbrig	0
-    	fam408	XLOC_009936crem	XLOC_012709cbrig	0
-	- ex OUTPUT file: OUT2
-	famID	  blastHits	possiblePairwiseComparissons	score	#sp
-    	fam408	0.0	10.0	0.0	3	rem	brig	ele
-
-
 
